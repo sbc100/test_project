@@ -2,7 +2,7 @@ name: Create Release
 
 # Trigger whenever any tag is created
 on:
-  create:
+  push:
     tags:
       - 'version_*'
 
