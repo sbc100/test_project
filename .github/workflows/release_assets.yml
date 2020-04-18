@@ -8,6 +8,9 @@ on:
 jobs:
   upload:
     name: upload
+    defaults:
+      run:
+        shell: bash
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
