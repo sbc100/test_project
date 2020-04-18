@@ -57,7 +57,7 @@ jobs:
         export VERSION=${{ github.event.release.tag_name }}
         export PKGNAME="test-$VERSION-x86_64-${{ matrix.os }}"
         export TARBALL=$PKGNAME.tar.gz
-        mv out/bin test-$VERSION
+        mv out test-$VERSION
         tar -czf $TARBALL test-$VERSION
         shasum -a 256 $TARBALL > $PKGNAME.tar.gz.sha256
         echo "::set-output name=asset_name::$TARBALL"
