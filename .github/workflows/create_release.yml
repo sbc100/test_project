@@ -4,7 +4,7 @@ name: Create Release
 on:
   create:
     tags:
-      - '*'
+      - 'version_*'
 
 jobs:
   create:
