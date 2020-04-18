@@ -62,7 +62,6 @@ jobs:
         export TARBALL=$PKGNAME.tar.gz
         mv out test-$VERSION
         tar -czf $TARBALL test-$VERSION
-        shasum -a 256 $TARBALL > $PKGNAME.tar.gz.sha256
         echo "::set-output name=asset_name::$TARBALL"
 
     - name: upload release asset
