@@ -3,8 +3,7 @@ name: Upload Release Assets
 # Trigger whenever a release is created
 on:
   release:
-    types:
-      - created
+    types: [created]
 
 jobs:
   build:
