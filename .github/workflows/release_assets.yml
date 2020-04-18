@@ -1,4 +1,4 @@
-name: Upload Release Assets
+name: Upload Assets
 
 # Trigger whenever a release is created
 on:
@@ -6,8 +6,8 @@ on:
     types: [created]
 
 jobs:
-  build:
-    name: build
+  upload:
+    name: upload
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
