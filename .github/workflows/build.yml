@@ -22,12 +22,8 @@ jobs:
     - name: install tools
       run: |
         sudo pip3 install flake8==3.7.8
-        sudo apt-get install clang-format clang-tidy
-        echo "::add-path::/usr/lib/llvm-8/bin"
     - name: flake8
       run: flake8
-    - run: ./scripts/clang-format-diff.sh
-    - run: ./scripts/clang-tidy-diff.sh
 
   build:
     name: build
@@ -89,7 +85,7 @@ jobs:
     - name: start docker
       run: |
         docker run -w /src -dit --name alpine -v $PWD:/src node:lts-alpine
-        echo "docker exec -it alpine \"$@\";" > ./alpine.sh
+        echo 'docker exec alpine "$@";' > ./alpine.sh
         chmod +x ./alpine.sh
     - name: install packages
       run: |
@@ -99,8 +95,6 @@ jobs:
       run: |
         ./alpine.sh cmake . -G Ninja
         ./alpine.sh ninja
-    - name: test
-      run: ./alpine.sh python3 ./check.py
 
   build-gcc:
     name: gcc
