@@ -57,15 +57,18 @@ jobs:
     - name: archive
       id: archive
       run: |
-        export VERSION=${{ github.event.release.tag_name }}
-        export PKGNAME="test-$VERSION-x86_64-${{ matrix.os }}"
-        export TARBALL=$PKGNAME.tar.gz
-        mv out test-$VERSION
-        tar -czf $TARBALL test-$VERSION
+        OSNAME=$(echo ${{ matrix.os }} | sed 's/-latest//' | sed 's/ubuntu/linux/')
+        VERSION=${{ github.event.release.tag_name }}
+        PKGNAME="binaryen-$VERSION-x86_64-$OSNAME"
+        TARBALL=$PKGNAME.tar.gz
+        SHASUM=$PKGNAME.tar.gz.sha256
+        mv out/bin binaryen-$VERSION
+        tar -czf $TARBALL binaryen-$VERSION
+        shasum -a 256 $TARBALL > $SHASUM
         echo "::set-output name=asset_name::$TARBALL"
+        echo "::set-output name=shasum::$SHASUM"
 
-    - name: upload release asset
-      id: upload-release-asset
+    - name: upload tarball
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,3 +77,13 @@ jobs:
         asset_path: ./${{ steps.archive.outputs.asset_name }}
         asset_name: ${{ steps.archive.outputs.asset_name }}
         asset_content_type: application/gzip
+
+    - name: upload shasum
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./${{ steps.archive.outputs.shasum }}
+        asset_name: ${{ steps.archive.outputs.shasum }}
+        asset_content_type: text/plain
