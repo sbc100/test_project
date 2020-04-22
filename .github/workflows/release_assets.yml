@@ -64,8 +64,7 @@ jobs:
         SHASUM=$PKGNAME.tar.gz.sha256
         mv out binaryen-$VERSION
         tar -czf $TARBALL binaryen-$VERSION
-        shasum -a 256 $TARBALL > $SHASUM
-        echo "::set-output name=asset_name::$TARBALL"
+        echo "::set-output name=tarball::$TARBALL"
         echo "::set-output name=shasum::$SHASUM"
 
     - name: upload tarball
@@ -74,9 +73,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./${{ steps.archive.outputs.asset_name }}
-        asset_name: ${{ steps.archive.outputs.asset_name }}
+        asset_path: ./${{ steps.archive.outputs.tarball }}
+        asset_name: ${{ steps.archive.outputs.tarball }}
         asset_content_type: application/gzip
+
+    - name: shasum
+      id: shasum
+      run: shasum -a 256 ${{ steps.archive.outputs.tarball }} > ${{ steps.archive.outputs.shasum }}
+      if: matrix.os != 'windows-latest'
 
     - name: upload shasum
       uses: actions/upload-release-asset@v1
@@ -87,3 +91,4 @@ jobs:
         asset_path: ./${{ steps.archive.outputs.shasum }}
         asset_name: ${{ steps.archive.outputs.shasum }}
         asset_content_type: text/plain
+      if: matrix.os != 'windows-latest'
